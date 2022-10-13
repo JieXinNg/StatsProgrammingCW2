@@ -30,7 +30,6 @@ for (x in 1:(2*n)) # loop over sequence of card numbers
       if (random_allocation[[i]][2] == k) #(random_allocation[[i]][2] == k)
       {
         card_array <- head(card_array,-1) # remove the repeated card number (the last element) 
-        #rearranged_list <- append(rearranged_list, list(random_allocation[[i]]))
         stop_outer_loop = TRUE # stop outer loop
         break # stop loop
       }
@@ -47,7 +46,42 @@ rearranged_list
 ###
 
 
-# Q1 # strategy one working
+
+### testing
+n<-6
+random_allocation<-list()
+box_numbers<-c(sample(1:(2*n)))
+card_numbers<-c(sample(1:(2*n)))
+for (i in 1:(2*n))
+{
+  random_allocation <- append(random_allocation,list(c(box_numbers[i],card_numbers[i]))) 
+}
+counter <- 0
+k <- 1
+
+for (i in 1:(2*n)) # loop over list 
+{
+  
+  if (random_allocation[[i]][2] == k) # if the box number is equal to the previous card number
+  {
+    if (i <= n)
+    {
+      counter <- counter + 1
+      break # stop loop
+    }
+  }
+}
+counter
+
+###
+
+
+
+
+
+
+
+# Q1 # strategies working, large numbers take longer to calculate
 Pone <- function(n, k, strategy, nreps = 10000)
 { 
   if (strategy == 1)
@@ -63,12 +97,12 @@ Pone <- function(n, k, strategy, nreps = 10000)
         random_allocation <- append(random_allocation,list(c(box_numbers[i],card_numbers[i]))) 
       }
       
-      rearranged_list <- list()
+      rearranged_list <- list() # rearrange random_allocation in the order of box opened
       card_array <- c(k) # k value as first element of card_array
       stop_outer_loop <- FALSE
       for (x in 1:(2*n)) # loop over sequence of card numbers
       {
-        for (i in 1:(2*n)) # loop over list 
+        for (i in 1:(2*n)) # loop over random_allocation 
         {
           
           if (random_allocation[[i]][1] == card_array[x]) # if the box number is equal to the previous card number
@@ -79,8 +113,7 @@ Pone <- function(n, k, strategy, nreps = 10000)
             if (random_allocation[[i]][2] == k) 
             {
               card_array <- head(card_array,-1) # remove the repeated card number (the last element) 
-              #rearranged_list <- append(rearranged_list, list(random_allocation[[i]]))
-              stop_outer_loop = TRUE # stop outer loop
+              stop_outer_loop = TRUE # stop outer loop once prisoner found own number
               break # stop loop
             }
           }
@@ -93,11 +126,95 @@ Pone <- function(n, k, strategy, nreps = 10000)
       }
       if (length(rearranged_list) <= n)
       {
-        counter <- counter + 1
+        counter <- counter + 1 # count number of times successfully found prisoner's number on or before n-th box 
       }
     }
     
+    return(counter / nreps) # probability = number of successes / total simulations (nreps)
+  }
+  
+  if (strategy == 2) # same as strategy 1 but change the k value to a random box number
+  {
+    k <- sample(2*n, 1)
+    counter <- 0
+    for (y in 1:nreps)
+    {
+      random_allocation<-list() # rearrange random_allocation in the order of box opened
+      box_numbers<-c(1:(2*n))
+      card_numbers<-c(sample(1:(2*n)))
+      for (i in 1:(2*n))
+      {
+        random_allocation <- append(random_allocation,list(c(box_numbers[i],card_numbers[i]))) 
+      }
+      
+      rearranged_list <- list()
+      card_array <- c(k) # k value as first element of card_array
+      stop_outer_loop <- FALSE
+      for (x in 1:(2*n)) # loop over sequence of card numbers
+      {
+        for (i in 1:(2*n)) # loop over random_allocation 
+        {
+          
+          if (random_allocation[[i]][1] == card_array[x]) # if the box number is equal to the previous card number
+          {
+            card_array <- c(card_array, random_allocation[[i]][2]) # add new card number to array 1 
+            rearranged_list <- append(rearranged_list, list(random_allocation[[i]]))
+            
+            if (random_allocation[[i]][2] == k) 
+            {
+              card_array <- head(card_array,-1) # remove the repeated card number (the last element) 
+              stop_outer_loop = TRUE # stop outer loop once prisoner found own number
+              break # stop loop
+            }
+          }
+          
+        }
+        if (stop_outer_loop)
+        {
+          break
+        }
+      }
+      if (length(rearranged_list) <= n)
+      {
+        counter <- counter + 1 # count number of times successfully found prisoner's number on or before n-th box 
+      }
+    }
+    
+    return(counter / nreps) # probability = number of successes / total simulations (nreps)
+  }
+  
+  
+  if (strategy == 3) # the boxes are randomly sorted, so we count in order and find the number of boxes needed to find k
+  {
+    counter <- 0 
+    for (y in 1:nreps)
+    {
+      random_allocation<-list()
+      box_numbers<-c(sample(1:(2*n))) # boxes are not in order
+      card_numbers<-c(sample(1:(2*n)))
+      for (i in 1:(2*n))
+      {
+        random_allocation <- append(random_allocation,list(c(box_numbers[i],card_numbers[i]))) 
+      }
+      
+      for (i in 1:(2*n)) # loop over list 
+      {
+        
+        if (random_allocation[[i]][2] == k) # if the box number is equal to k
+        {
+          if (i <= n)
+          {
+            counter <- counter + 1
+            break # stop loop
+          }
+        }
+      }
+    }
     return(counter / nreps)
   }
 }
 
+
+Pone(100,43,1,10000)
+Pone(100,43,2,10000)
+Pone(100,43,3,10000)
