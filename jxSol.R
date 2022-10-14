@@ -48,6 +48,68 @@ rearranged_list
 
 
 ### testing
+n <- 2
+box_numbers<-c(1:(2*n))
+card_numbers<-c(sample(1:(2*n)))
+random_allocation<-list()
+for (i in 1:(2*n))
+{
+  random_allocation <- append(random_allocation,list(c(box_numbers[i],card_numbers[i]))) 
+}
+random_allocation
+
+loop1A<-list()
+len_array<-list()
+loop2A<-c(1:(2*n))
+stop_outer_loop <- FALSE
+# loop 2
+for (y in 1:(2*n)){
+  k <- y
+  rearranged_list <- list()
+  card_array <- c(k) # k value as first element of card_array
+  if (y %in% loop2A){
+    for (x in 1:(2*n)) # loop over sequence of card numbers
+    {
+      for (i in 1:(2*n)) # loop over box 
+      {
+        
+        if (random_allocation[[i]][1] == card_array[x]) # if the box number is equal to the previous card number
+        {
+          card_array <- c(card_array, random_allocation[[i]][2]) # add new card number to array 1 
+          rearranged_list <- append(rearranged_list, list(random_allocation[[i]]))
+          #loop2A <- loop2A[!loop2A %in% random_allocation[[i]][1]] # remove used number
+          print("here 1")
+          
+          if (random_allocation[[i]][2] == k) 
+          {
+            print("end loop")
+            card_array <- head(card_array,-1) # remove the repeated card number (the last element) 
+            #loop2A <- loop2A[!loop2A %in% k]
+            stop_outer_loop = TRUE # stop outer loop
+            break # stop loop
+          }
+        }
+        
+      }
+      if (stop_outer_loop)
+      {
+        break
+      }
+    }
+  }
+  #if(length(rearranged_list) != 0)
+  #{
+  loop1A <- append(loop1A,rearranged_list)
+  #print(rearranged_list)
+  #}
+  
+}
+loop1A
+###
+
+
+
+### testing
 n<-6
 random_allocation<-list()
 box_numbers<-c(sample(1:(2*n)))
@@ -56,24 +118,11 @@ for (i in 1:(2*n))
 {
   random_allocation <- append(random_allocation,list(c(box_numbers[i],card_numbers[i]))) 
 }
-counter <- 0
-k <- 1
-
-# loop over list 
-for (i in 1:(2*n)) { 
-  
-  if (random_allocation[[i]][2] == k) # if the box number is equal to the previous card number
-  {
-    if (i <= n)
-    {
-      counter <- counter + 1
-      break # stop loop
-    }
-  }
-}
-counter
 
 ###
+
+
+
 
 
 
@@ -231,3 +280,20 @@ Pone <- function(n, k, strategy, nreps = 10000)
 Pone(100,43,1,10000)
 Pone(100,43,2,10000)
 Pone(100,43,3,10000)
+
+
+
+n<-50
+p <- 1
+for (i in 1:(2*n)){
+  p <- p * Pone(n,i,1,5000)
+}
+p
+
+
+
+
+
+
+
+
