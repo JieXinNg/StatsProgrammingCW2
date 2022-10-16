@@ -203,4 +203,5 @@ cat("When n=50, the individual success probability is: ", Pone(50,7,2,10000),
 cat("When n=50, the individual success probability is: ", Pone(50,7,3,10000),
     " and the joint success probability is: ", Pall(50,3,10000),"with strategy 3.")
 
-# The joint success probability is surprisingly high for strategy 1
+# The joint success probability is surprisingly high for strategy 1. 
+# No matter what other arguments take, the probability is around 31%, which is quite higher than other two strategies.
