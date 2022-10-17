@@ -182,6 +182,39 @@ Pall <- function(n, strategy, nreps) {
 Pall(5,1,10000)
 Pall(5,2,10000)
 Pall(5,3,10000)
+Pall(50,1,10000)
+Pall(50,2,10000)
+Pall(50,3,10000)
+
+dloop <- function(n, k, nreps) { 
+  loop_array <- rep(0, nreps)
+  for (a in 1:nreps) {
+    #Card Box Allocation
+    loop_length <- 1
+    box_numbers <- c(1:n)
+    card_numbers <- c(sample(1:n))
+    cards_in_boxes <- list()
+    open_order <- c(k)
+    j <- 1
+    for (i in 1:n) {
+      cards_in_boxes <- append(cards_in_boxes, list(c(box_numbers[i], card_numbers[i])))
+    }
+    while(TRUE) {
+      if (cards_in_boxes[[open_order[j]]][2] == k) {
+        break}
+      else {
+        open_order <- append(open_order, cards_in_boxes[[open_order[j]]][2])
+        loop_length <- loop_length + 1
+        j <- j+1
+      }      
+    }
+    loop_array[a] <- loop_length
+  }
+  prob_vector <- tabulate(loop_array)/nreps
+  print(prob_vector)
+}
+
+
 
 
   
