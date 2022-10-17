@@ -47,86 +47,6 @@ rearranged_list
 
 
 
-### testing
-n <- 2
-box_numbers<-c(1:(2*n))
-card_numbers<-c(sample(1:(2*n)))
-random_allocation<-list()
-for (i in 1:(2*n))
-{
-  random_allocation <- append(random_allocation,list(c(box_numbers[i],card_numbers[i]))) 
-}
-random_allocation
-
-loop1A<-list()
-len_array<-list()
-loop2A<-c(1:(2*n))
-stop_outer_loop <- FALSE
-# loop 2
-for (y in 1:(2*n)){
-  k <- y
-  rearranged_list <- list()
-  card_array <- c(k) # k value as first element of card_array
-  if (y %in% loop2A){
-    for (x in 1:(2*n)) # loop over sequence of card numbers
-    {
-      for (i in 1:(2*n)) # loop over box 
-      {
-        
-        if (random_allocation[[i]][1] == card_array[x]) # if the box number is equal to the previous card number
-        {
-          card_array <- c(card_array, random_allocation[[i]][2]) # add new card number to array 1 
-          rearranged_list <- append(rearranged_list, list(random_allocation[[i]]))
-          #loop2A <- loop2A[!loop2A %in% random_allocation[[i]][1]] # remove used number
-          print("here 1")
-          
-          if (random_allocation[[i]][2] == k) 
-          {
-            print("end loop")
-            card_array <- head(card_array,-1) # remove the repeated card number (the last element) 
-            #loop2A <- loop2A[!loop2A %in% k]
-            stop_outer_loop = TRUE # stop outer loop
-            break # stop loop
-          }
-        }
-        
-      }
-      if (stop_outer_loop)
-      {
-        break
-      }
-    }
-  }
-  #if(length(rearranged_list) != 0)
-  #{
-  loop1A <- append(loop1A,rearranged_list)
-  #print(rearranged_list)
-  #}
-  
-}
-loop1A
-###
-
-
-
-### testing
-n<-6
-random_allocation<-list()
-box_numbers<-c(sample(1:(2*n)))
-card_numbers<-c(sample(1:(2*n)))
-for (i in 1:(2*n))
-{
-  random_allocation <- append(random_allocation,list(c(box_numbers[i],card_numbers[i]))) 
-}
-
-###
-
-
-
-
-
-
-
 
 
 
@@ -282,13 +202,92 @@ Pone(100,43,2,10000)
 Pone(100,43,3,10000)
 
 
-
+# Q2
 n<-50
 p <- 1
 for (i in 1:(2*n)){
   p <- p * Pone(n,i,1,5000)
 }
 p
+
+
+# Q5
+dloops <- function(n,nreps)
+{
+  prob_arr <- c()
+  
+  for (h in 1:nreps)
+  {
+    card_array<-c(sample((2*n)))
+    uniq_list<-list() # list to collect the unique cycles
+    big_list<-list() # list of all cycles and their permutations, there will be 2n in total
+    for (i in 1:(2*n))
+    {
+      k<-i
+      cycle = c(k) # array to keep track of cycles
+      for (x in 1:(2*n))
+      {
+        if (card_array[cycle[[x]]] %in% cycle) # when the cycle starts to repeat
+        {
+          big_list<-append(big_list,list(cycle)) # break loop when reaching the end of cycle
+          break
+        }
+        cycle<-append(cycle,card_array[cycle[[x]]]) # add each element of the cycle
+      }
+    }
+    
+    # keep adding the unique cycles to uniq_list while removing it from 
+    # big_list until all elements are removed from big_list
+    while (length(big_list) > 0)
+    {
+      longLen<- 0
+      ulist<- c() # array to match against other cycles  
+      for (i in 1:length(big_list))
+      {
+        if (length(big_list[[i]]) > longLen)
+        {
+          longLen = length(big_list[[i]])
+          ulist <- big_list[[i]]
+        }
+      } 
+      
+      uniq_list <- append(uniq_list, list(ulist))
+      targetArr <- c()
+      for (y in 1:length(big_list))# loop from 1 till (2n)-1 # remove same loops from big_list
+      {
+        c3<-match(ulist,big_list[[y]])
+        if (! (is.na(c3[1])))
+        {
+          targetArr <- c(targetArr, y)
+        }
+      }
+      
+      big_list[targetArr] <- NULL
+    }
+    
+    
+    num_match<-c(1:(2*n)) # match the length of cycles to count how many there are
+    lengths_tab<-rep(0,(2*n))
+    for (i in 1:length(uniq_list))
+    {
+      addition <-c(match(num_match,length(uniq_list[[i]])))
+      addition[is.na(addition)] = 0
+      lengths_tab <- lengths_tab +  addition
+    }
+    
+    lengths_tab <- lengths_tab/lengths_tab
+    lengths_tab[is.na(lengths_tab)] = 0
+    if (h == 1){
+      prob_arr <- lengths_tab
+    }
+    else{
+      prob_arr <- prob_arr + lengths_tab
+    }
+  }
+  
+  return(prob_arr / nreps)
+}
+dloops(6,10)
 
 
 
