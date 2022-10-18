@@ -1,4 +1,4 @@
-create_box <- function(n)
+ create_box <- function(n)
 {
   box_number <- c(1:(2*n))
   card_number <- sample(1:(2*n))
@@ -13,7 +13,8 @@ create_box <- function(n)
 }
 
 
-# argument n denote the max times that prisoners can select boxes
+# argument n denotes the max number of boxes one prisoner can select, k denotes the prisoner's number, 
+# strategy means the method we choose and it can be 1,2,3 and nreps is the number of replicatesimulations
 Pone <- function(n,k,strategy,nreps)
 {
   if (strategy == 1)
@@ -22,8 +23,8 @@ Pone <- function(n,k,strategy,nreps)
     for (rep in 1:nreps)
     {
       box_with_card <- create_box(n)
-      #start with the kth box
-      picked_box <- box_with_card[[k]]
+      picked_box <- box_with_card[[k]] # start from the kth box
+      # loop n times to ensure that n card numbers can be checked to the maximum
       for (b in 1:n)
       {
         if (picked_box[2] != k)
@@ -32,7 +33,7 @@ Pone <- function(n,k,strategy,nreps)
         }
         else 
         {
-          count <- count+1
+          count <- count+1 # counting up the times that the prisoner has found the card 
           break
         }
       }
@@ -45,7 +46,7 @@ Pone <- function(n,k,strategy,nreps)
     for (rep in 1:nreps)
     {
       box_with_card <- create_box(n)
-      picked_box <- box_with_card[[sample(1:(2*n),1)]]
+      picked_box <- box_with_card[[sample(1:(2*n),1)]] # start from a randomly selected box
       for (b in 1:n)
       {
         if (picked_box[2] != k)
@@ -61,19 +62,19 @@ Pone <- function(n,k,strategy,nreps)
     }
   }
   
-  else 
+  else if (strategy == 3)
   {
     count = 0
     for (rep in 1:nreps)
     {
       box_with_card <- create_box(n)
       picked_box <- box_with_card[[sample(1:(2*n),1)]]
-      box_with_card[[picked_box[1]]] <- NULL
+      box_with_card[[picked_box[1]]] <- NULL # the boxes cannot be selected twice
       for (b in 1:n)
       {
         if (picked_box[2] != k)
         {
-          picked_index <- sample(1:length(box_with_card),1)
+          picked_index <- sample(1:length(box_with_card),1) # every box is randomly selected
           picked_box <- box_with_card[[picked_index]]
           box_with_card[[picked_index]] <- NULL
         }
@@ -93,16 +94,16 @@ Pone <- function(n,k,strategy,nreps)
 
 Pall <- function(n,strategy,nreps)
 {
-  count_all_simulations <- 0 #count up the number of simulations that all prisoners succeed
+  count_all_simulations <- 0 #counting up the times of simulations that all prisoners succeed
   if(strategy == 1)
   {
     for (rep in 1:nreps)
     {
-      count_one_simulation <- 0 # count up the number of prisoners succeed in a simulation
+      count_one_simulation <- 0 # counting up the times of prisoners succeed in a simulation
       box_with_card <- create_box(n)
       for (k in 1:(2*n))
       {
-        picked_box <- box_with_card[[k]]
+        picked_box <- box_with_card[[k]] # boxes and cards inside are exactly the same for every prisoner in one simulation
         for (b in 1:n)
         {
           if (picked_box[2] != k)
@@ -111,14 +112,14 @@ Pall <- function(n,strategy,nreps)
           }
           else 
           {
-            count_one_simulation <- count_one_simulation+1
+            count_one_simulation <- count_one_simulation+1 # counting up the numbers of prisoners who have found the card in one simulation
             break
           }
          }
        }
       if (count_one_simulation == (2*n))
       {
-        count_all_simulations <- count_all_simulations+1
+        count_all_simulations <- count_all_simulations+1 # counting up the times that all prisoners succeed
       }
     }
   }
@@ -153,7 +154,7 @@ Pall <- function(n,strategy,nreps)
     }
   }
   
-  else 
+  else if (strategy == 3)
   {
     count_all_simulations <- 0
     for (rep in 1:nreps)
@@ -164,13 +165,20 @@ Pall <- function(n,strategy,nreps)
       {
         picked_box <- box_with_card[[sample(1:(2*n),1)]]
         remained_index <- c(1:(2*n))
-        remained_index <- remained_index[-picked_box[1]]
+        remained_index <- remained_index[-picked_box[1]] # the boxes cannot be selected twice
         for (b in 1:n)
         {
           if (picked_box[2] != k)
           {
-            picked_index <- sample(remained_index,1)
-            picked_box <- box_with_card[[picked_index]]
+            if (length(remained_index)>=2)
+            {
+              picked_index <- sample(remained_index,1)
+            }
+            else if(length(remained_index)==1)
+            {
+              picked_index <- remained_index
+            }
+            picked_box <- box_with_card[[picked_index]] 
             remained_index <- remained_index[-picked_box[1]]
           }
           else 
@@ -213,9 +221,10 @@ dloop <- function (n,nreps)
   for (rep in 1:nreps)
   {
     loop_len_for_one <- rep(0,2*n)
-    loop_included <- c()
+    # collect the box numbers that have already been in a loop so these indices will not be chosen when starting other loops
+    loop_included <- c() 
     card_num <- sample(1:(2*n))
-    start <- 1
+    start <- 1 
     while (length(loop_included)!=2*n) 
     {
       if (length(loop_included)>=1 & length(loop_included)<2*n-1)
@@ -233,18 +242,19 @@ dloop <- function (n,nreps)
       {
         loop_included <- append(loop_included,pick)
         pick <- card_num[pick]
-        length_count <- length_count+1
+        length_count <- length_count+1 # counting up the length of each loop
       }
+      # the last element in the loop is not counted up
       loop_included <- append(loop_included,pick)
       length_count <- length_count+1
-      loop_len_for_one[length_count] <- loop_len_for_one[length_count]+1
+      loop_len_for_one[length_count] <- loop_len_for_one[length_count]+1 # collect the times each loop length shows in one simulation
       
     }
     for (i in 1:(2*n))
     {
       if (loop_len_for_one[i]!=0)
       {
-        loop_len_for_all[i] <- loop_len_for_all[i]+1
+        loop_len_for_all[i] <- loop_len_for_all[i]+1 # counting up each loop length occurring at least once in all simulations
       }
     }
     
@@ -252,5 +262,5 @@ dloop <- function (n,nreps)
   
   return(loop_len_for_all/nreps)
 }
-#dloop(5,10)
+dloop(50,10000)
 
