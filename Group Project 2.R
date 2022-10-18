@@ -190,18 +190,67 @@ Pall <- function(n,strategy,nreps)
   return(count_all_simulations/nreps) 
 }
 
-cat("When n=5, the individual success probability is: ", Pone(5,7,1,10000),
-    " and the joint success probability is: ", Pall(5,1,10000),"with strategy 1.")
-cat("When n=5, the individual success probability is: ", Pone(5,7,2,10000),
-    " and the joint success probability is: ", Pall(5,2,10000),"with strategy 2.")
-cat("When n=5, the individual success probability is: ", Pone(5,7,3,10000),
-    " and the joint success probability is: ", Pall(5,3,10000),"with strategy 3.")
-cat("When n=50, the individual success probability is: ", Pone(50,7,1,10000),
-    " and the joint success probability is: ", Pall(50,1,10000),"with strategy 1.")
-cat("When n=50, the individual success probability is: ", Pone(50,7,2,10000),
-    " and the joint success probability is: ", Pall(50,2,10000),"with strategy 2.")
-cat("When n=50, the individual success probability is: ", Pone(50,7,3,10000),
-    " and the joint success probability is: ", Pall(50,3,10000),"with strategy 3.")
+#cat("When n=5, the individual success probability is: ", Pone(5,7,1,10000),
+    #" and the joint success probability is: ", Pall(5,1,10000),"with strategy 1.")
+#cat("When n=5, the individual success probability is: ", Pone(5,7,2,10000),
+   # " and the joint success probability is: ", Pall(5,2,10000),"with strategy 2.")
+#cat("When n=5, the individual success probability is: ", Pone(5,7,3,10000),
+    #" and the joint success probability is: ", Pall(5,3,10000),"with strategy 3.")
+#cat("When n=50, the individual success probability is: ", Pone(50,7,1,10000),
+    #" and the joint success probability is: ", Pall(50,1,10000),"with strategy 1.")
+#cat("When n=50, the individual success probability is: ", Pone(50,7,2,10000),
+    #" and the joint success probability is: ", Pall(50,2,10000),"with strategy 2.")
+#cat("When n=50, the individual success probability is: ", Pone(50,7,3,10000),
+    #" and the joint success probability is: ", Pall(50,3,10000),"with strategy 3.")
 
 # The joint success probability is surprisingly high for strategy 1. 
 # No matter what other arguments take, the probability is around 31%, which is quite higher than other two strategies.
+
+
+dloop <- function (n,nreps)
+{
+  loop_len_for_all <- rep(0,2*n)
+  for (rep in 1:nreps)
+  {
+    loop_len_for_one <- rep(0,2*n)
+    loop_included <- c()
+    card_num <- sample(1:(2*n))
+    start <- 1
+    while (length(loop_included)!=2*n) 
+    {
+      if (length(loop_included)>=1 & length(loop_included)<2*n-1)
+      {
+        start <- sample(c(1:(2*n))[-loop_included],1)
+      }
+      else if(length(loop_included)==2*n-1)
+      {
+        start <- c(1:(2*n))[-loop_included]
+      }
+      pick <- start
+      length_count <- 0
+      
+      while (card_num[pick]!=start)
+      {
+        loop_included <- append(loop_included,pick)
+        pick <- card_num[pick]
+        length_count <- length_count+1
+      }
+      loop_included <- append(loop_included,pick)
+      length_count <- length_count+1
+      loop_len_for_one[length_count] <- loop_len_for_one[length_count]+1
+      
+    }
+    for (i in 1:(2*n))
+    {
+      if (loop_len_for_one[i]!=0)
+      {
+        loop_len_for_all[i] <- loop_len_for_all[i]+1
+      }
+    }
+    
+  }
+  
+  return(loop_len_for_all/nreps)
+}
+#dloop(5,10)
+
