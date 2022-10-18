@@ -186,35 +186,57 @@ Pall(50,1,10000)
 Pall(50,2,10000)
 Pall(50,3,10000)
 
-dloop <- function(n, k, nreps) { 
-  loop_array <- rep(0, nreps)
+dloop <- function(n, nreps) { 
+  
+  loop_array <- list()
   for (a in 1:nreps) {
     #Card Box Allocation
-    loop_length <- 1
-    box_numbers <- c(1:n)
-    card_numbers <- c(sample(1:n))
+    box_numbers <- c(1:(2*n))
+    card_numbers <- c(sample(1:(2*n)))
     cards_in_boxes <- list()
-    open_order <- c(k)
-    j <- 1
-    for (i in 1:n) {
+    sub_loop_array <- rep(0, 2*n)
+  
+    for (i in 1:(2*n)) {
       cards_in_boxes <- append(cards_in_boxes, list(c(box_numbers[i], card_numbers[i])))
     }
-    while(TRUE) {
-      if (cards_in_boxes[[open_order[j]]][2] == k) {
-        break}
-      else {
-        open_order <- append(open_order, cards_in_boxes[[open_order[j]]][2])
-        loop_length <- loop_length + 1
-        j <- j+1
-      }      
+    for (b in 1:(2*n)) {
+      #Initialization
+      open_order <- c(b)
+      loop_length <- 1
+      #Card opening loop
+      for (j in 1:(2*n)) {
+        if (cards_in_boxes[[open_order[j]]][2] == b) {
+          sub_loop_array[b] <- loop_length
+          break}
+        else {open_order <- append(open_order, cards_in_boxes[[open_order[j]]][2])
+              loop_length <- loop_length+1}
+      }
     }
-    loop_array[a] <- loop_length
+    #loop_array <- append(loop_array, max(sub_loop_array))
+    loop_array <- append(loop_array, unique(sub_loop_array))
   }
-  prob_vector <- tabulate(loop_array)/nreps
-  print(prob_vector)
+  #print(open_order)
+  #print(loop_array)
+  loop_size <- c(1:(2*n))
+  match_index <- match(loop_array, loop_size)
+  freq <- tabulate(match_index)
+  #freq_weight <- 1:(2*n)
+  #weighted_freq <- freq*freq_weight
+  #print(weighted_freq)
+  return(freq)
 }
+
+dloop(10,10000)
+
 
 
 
 
   
+    for (j in 1:(2*n)) {
+      if (!is.null(cards_in_boxes[[open_order[j]]][2]) && cards_in_boxes[[open_order[j]]][2] == open_order[j]) {
+        loop_length <- length(open_order)}
+      else {
+        open_order <- append(open_order, cards_in_boxes[[open_order[j]]][2])
+      }      
+    }
