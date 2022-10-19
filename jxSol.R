@@ -403,27 +403,8 @@ dloop(10,100)
 #Q6
 prob<-dloop(50,100)
 dat <- data.frame(x=c(1:100), y=(prob))
-barplot(dat$y, names.arg=dat$x, ylim=c(0,0.8), ylab="probability", xlab="cycle length")
+barplot(dat$y, names.arg=dat$x, ylim=c(0,0.6), ylab="probability", xlab="cycle length")
+prob2<- sum(prob[51:100])
 
-n<- 6
-counter <- 0
-  success_prisoner <- 0
-  card_array <- c(sample(1:(2*n)))
-  uniq_list <- cycle_decompose(card_array)
-  for (k in 1:(2*n)) {
-    for (u in 1:length(uniq_list)) {
-      # if prisoner k is in the certain cycle and prisoner found k card by n-th box
-      if (k %in% uniq_list[[u]] && length(uniq_list[[u]]) <= n) {
-        # count the number of prisoners who found their card
-        success_prisoner <- success_prisoner + 1
-        print(k)
-      }
-    }
-  }
-  # if all prisoners found their card for this simulation
-  if (success_prisoner == (2*n)) {
-    counter <- counter + 1
-  }
-  uniq_list
-counter
-success_prisoner
+# prob that loops no longer than 50 
+1 - prob2
