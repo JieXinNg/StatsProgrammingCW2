@@ -401,10 +401,68 @@ dloop <- function(n, nreps = 10000)
 dloop(10,100)
 
 #Q6
-prob<-dloop(50,100)
+prob<-dloop(50,10000)
 dat <- data.frame(x=c(1:100), y=(prob))
 barplot(dat$y, names.arg=dat$x, ylim=c(0,0.6), ylab="probability", xlab="cycle length")
 prob2<- sum(prob[51:100])
 
+<<<<<<< HEAD
 # prob that loops no longer than 50 
 1 - prob2
+=======
+
+
+
+## qiqi's dloop
+dloop <- function (n,nreps){
+  
+  loop_len_for_all <- rep(0,2*n) # occurence for each cycle length
+  for (rep in 1:nreps)
+  {
+    loop_len_for_one <- rep(0,2*n) # for a cycle length
+    # collect the box numbers that have already been in a loop so these indices will not be chosen when starting other loops
+    loop_included <- c() 
+    card_num <- sample(1:(2*n))
+    start <- 1 
+    # we iterate over 
+    while (length(loop_included) != 2*n){
+      
+      if (length(loop_included) >= 1 & length(loop_included) < 2*n-1){
+        start <- sample(c(1:(2*n))[-loop_included],1)
+      }
+      
+      else if(length(loop_included) == 2*n-1){
+        start <- c(1:(2*n))[-loop_included]
+      }
+      
+      pick <- start
+      length_count <- 0
+      
+      while (card_num[pick]!=start)
+      {
+        loop_included <- append(loop_included,pick)
+        pick <- card_num[pick]
+        length_count <- length_count+1 # counting up the length of each loop
+      }
+      # the last element in the loop is not counted up
+      loop_included <- append(loop_included,pick)
+      length_count <- length_count+1
+      loop_len_for_one[length_count] <- loop_len_for_one[length_count]+1 # collect the times each loop length shows in one simulation
+      
+    }
+    for (i in 1:(2*n))
+    {
+      if (loop_len_for_one[i]!=0)
+      {
+        loop_len_for_all[i] <- loop_len_for_all[i]+1 # counting up each loop length occurring at least once in all simulations
+      }
+    }
+    
+  }
+  
+  return(loop_len_for_all/nreps)
+}
+
+  
+
+>>>>>>> 5a494d19feba90c64f3d5b6e1515680bbb34e8bd
