@@ -148,109 +148,101 @@ Pone <- function(n, k, strategy, nreps){
   
 }
 
-Pall <- function(n,strategy,nreps){
-  count_all_simulations <- 0 #counting up the times of simulations that all prisoners succeed
+# Pall aims to obtain the probability that all prisoners successfully found the card with their number on it. 
+# The 3 strategies are the same as those in Pone.
+# @param n = number of boxes opened to find k card
+# @param strategy = strategy chosen to find k card, which should be 1, 2 or 3
+# @param nreps = number of repetitions of simulation to estimate probability
+Pall <- function(n,strategy,nreps)
+{ 
+  count_simulations <- 0 # counting up the number of times that all prisoners succeed
   if(strategy == 1)
   {
-    for (rep in 1:nreps)
-    {
-      count_one_simulation <- 0 # counting up the times of prisoners succeed in a simulation
+    # repeat the simulation nreps times
+    for (rep in 1:nreps){
+      count_one_simulation <- 0 # counting up the number of prisoners succeed in one simulation
+      # all pairs (box_number, card_number) are exactly the same for every prisoner in the same simulation
       box_with_card <- create_box(n)
-      for (k in 1:(2*n))
-      {
-        picked_box <- box_with_card[[k]] # boxes and cards inside are exactly the same for every prisoner in one simulation
-        for (b in 1:n)
-        {
-          if (picked_box[2] != k)
-          {
-            picked_box <- box_with_card[[picked_box[2]]]
+      # loop over the prisoners
+      for (k in 1:(2*n)){
+        picked_box <- box_with_card[[k]] # start from the k-th box
+        # every prisoner can open at most n boxes
+        for (b in 1:n){
+          # decide if the prisoner successfully found the card with number k
+          if (picked_box[2] != k){
+            # pick the next box with the same number as the current card has
+            picked_box <- box_with_card[[picked_box[2]]] 
           }
-          else 
-          {
-            count_one_simulation <- count_one_simulation+1 # counting up the numbers of prisoners who have found the card in one simulation
+          else {
+            count_one_simulation <- count_one_simulation + 1 # +1 for every individual success
             break
           }
         }
       }
-      if (count_one_simulation == (2*n))
-      {
-        count_all_simulations <- count_all_simulations+1 # counting up the times that all prisoners succeed
+      # decide if all prisoners succeed in this simulation
+      if (count_one_simulation == 2*n){
+        count_simulations <- count_simulations + 1 # +1 for every joint success
       }
     }
   }
   
   else if (strategy == 2)
   {
-    count_all_simulations <- 0
-    for (rep in 1:nreps)
-    {
-      count_one_simulation <- 0
+    count_simulations <- 0 # counting up the number of times that all prisoners succeed
+    # repeat the simulation nreps times
+    for (rep in 1:nreps){
+      count_one_simulation <- 0 # counting up the number of prisoners succeed in one simulation
       box_with_card <- create_box(n)
-      for (k in 1:(2*n))
-      {
-        picked_box <- box_with_card[[sample(1:(2*n),1)]]
-        for (b in 1:n)
-        {
-          if (picked_box[2] != k)
-          {
+      # loop over the prisoners
+      for (k in 1:(2*n)){
+        picked_box <- box_with_card[[sample(1:(2*n), 1)]] # start from a randomly selected box
+        # every prisoner can open at most n boxes
+        for (b in 1:n){
+          # decide if the prisoner successfully found the card with number k
+          if (picked_box[2] != k){
             picked_box <- box_with_card[[picked_box[2]]]
           }
-          else 
-          {
-            count_one_simulation <- count_one_simulation+1
+          else {
+            count_one_simulation <- count_one_simulation + 1 # +1 for every individual success
             break
           }
         }
       }
-      if (count_one_simulation == (2*n))
-      {
-        count_all_simulations <- count_all_simulations+1
+      # decide if all prisoners succeed in this simulation
+      if (count_one_simulation == 2*n){
+        count_simulations <- count_simulations + 1 # +1 for every joint success
       }
     }
   }
   
-  else if (strategy == 3)
+  else if (strategy == 3) 
   {
-    count_all_simulations <- 0
-    for (rep in 1:nreps)
-    {
-      count_one_simulation <- 0
+    count_simulations <- 0 # counting up the number of times that all prisoners succeed
+    # repeat the simulation nreps times
+    for (rep in 1:nreps){
       box_with_card <- create_box(n)
-      for (k in 1:(2*n))
-      {
-        picked_box <- box_with_card[[sample(1:(2*n),1)]]
-        remained_index <- c(1:(2*n))
-        remained_index <- remained_index[-picked_box[1]] # the boxes cannot be selected twice
-        for (b in 1:n)
-        {
-          if (picked_box[2] != k)
-          {
-            if (length(remained_index)>=2)
-            {
-              picked_index <- sample(remained_index,1)
-            }
-            else if(length(remained_index)==1)
-            {
-              picked_index <- remained_index
-            }
-            picked_box <- box_with_card[[picked_index]] 
-            remained_index <- remained_index[-picked_box[1]]
-          }
-          else 
-          {
-            count_one_simulation <- count_one_simulation+1
+      count_one_simulation <- 0 # counting up the number of prisoners succeed in one simulation
+      # loop over the prisoners
+      for (k in 1:(2*n)){
+        # prisoners open boxes at random
+        open_order <- c(sample(1:(2*n),n))
+        # every prisoner can open at most n boxes
+        for (j in 1:n) {
+          # decide if the prisoner successfully found the card with number k
+          if (box_with_card[[open_order[j]]][2] == k) {
+            count_one_simulation <- count_one_simulation + 1 # +1 for every individual success
             break
           }
         }
       }
-      if (count_one_simulation == (2*n))
-      {
-        count_all_simulations <- count_all_simulations+1
+      # decide if all prisoners succeed in this simulation
+      if (count_one_simulation == 2*n) {
+        count_simulations <- count_simulations + 1 # +1 for every joint success
       }
     }
+    
   }
-  
-  return(count_all_simulations/nreps) 
+  return(count_simulations/nreps) 
 }
 
 # We compare the probabilities for n=5 and n=50 for individual and joint probabilities
