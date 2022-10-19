@@ -3,6 +3,8 @@
 # 2. Qiqi Xiao s2323497
 # 3. Imran Toprak s2430699
 
+# GitHub Repo: https://github.com/JieXinNg/StatsProgrammingCW2.git
+
 # Team member contributions: 
 # the three of us tried all the questions together and helped each other out when stuck
 # we compared our codes and modified them into this final version by picking out bits from each others' codes
@@ -268,12 +270,13 @@ for (i in 1:3){
 #elaborated in the next questions, as well.
 
 #For strategy 3, we do not consider the loops, because the prisoners pick the boxes
-#randomly. Their decision do not depends on the outcome of the previous one. So, each prisoner will have 0.5 chance, and the
-#success probability of each prisoner is independent from the other. Therefore, joint success probability decreases dramatically 
+#randomly. Their decision do not depends on the outcome of the previous box. So, each prisoner will have 0.5 chance, and the
+#success probability of each prisoner is independent from the others. Therefore, joint success probability decreases dramatically 
 #with increasing n.
 
 #If prisoners decide on the next box according to the outcome of previous box, a loop will definitely occur, because we will turn
-#back to our initial box ultimately. In other words, there will be limited number of loops whose ranges are ranging from 1 to 2n.
+#back to our initial box ultimately. In other words, there will be limited number of loops whose lengths are ranging from 1 to 2n
+#in each random shuffling of the cards.
 
 #Then, for strategy 2, we always have to possibilites: Either the first randomly selected box and our desired box are members of
 #the same loop, or not. If not, we will have infinite loop and it is impossible to reach the box containing our number in n steps.
@@ -283,11 +286,11 @@ for (i in 1:3){
 
 #Unlike strategy 2, strategy 3 works significantly well, because the loop including our first box will definitely include our
 #desired box, because we are starting with the box with the our number. Then, the probability of success will depend on the length
-#of this first loop. As we try max n times, we can find our number only if the length of loop is less than 51. For a single person,
-#the probability of success is still 0.5, but this time joint probability is much higher, because the success of each prisoner
-#will not be independent from the others. Because the room is turned to its original state after each turn, and all prisoners 
-#start with a unique number. Then, all loops included by 2n box-number combinations will be tried by the prisoners, and if the 
-#maximum loop length is less than 51, then all prisoners will be free. 
+#of this first loop. As we can try n times at most, we can find our number only if the length of loop is less than n+1. For a single
+#person, the probability of success is still 0.5, but this time joint probability is much higher, because the success of each 
+#prisoner will not be independent from the others. Because the room is turned to its original state after each turn, and all 
+#prisoners start with a unique number. Then, all loops included by 2n different box-number combinations will be tried by the 
+#prisoners, and if the maximum loop length is less than n+1, then all prisoners will be free. 
 
 
 dloop <- function (n,nreps){
@@ -375,6 +378,6 @@ prob2<- sum(prob[51:100])
 print(paste0("The probability that there is no loop longer than 50 in a random reshuffling of cards to boxes is ", 1 - prob2))
 # plot the probabilities
 dat <- data.frame(x=c(1:100), y=(prob))
-barplot(dat$y, names.arg=dat$x, ylim=c(0,0.7), ylab="Probability", xlab="Cycle length")
+barplot(dat$y, names.arg=dat$x, ylim=c(0,0.7), ylab="Probability of Occurance", xlab="Cycle Length")
 
 
