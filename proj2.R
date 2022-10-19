@@ -261,26 +261,42 @@ for (i in 1:3){
 
 
 # Q5
-dloop <- function (n,nreps)
-{
+# dloop is used to estimate the probabilities of the probability of 
+# each loop length from 1 to 2n occurring at least once in a random shuffling of cards to boxes
+# returns a 2n array of probabilities for each loop length occurring at least once in a random shuffling of cards to boxes
+#
+# @param n = half of the number of boxes, i.e. put n=5 if you wish to create 10 box-card pairs
+# @param nreps = number of repetitions of simulation to estimate probability
+dloop <- function (n,nreps){
+  
+  # array to contain the probabilites for all loop length occurring at least once 
   loop_len_for_all <- rep(0,2*n)
-  for (rep in 1:nreps)
-  {
+  
+  # loop the simulation nreps times 
+  for (rep in 1:nreps){
+    # array to contain the proability for all loop length occurring at least once in a given simulation
     loop_len_for_one <- rep(0,2*n)
     # collect the box numbers that have already been in a loop so these indices will not be chosen when starting other loops
     loop_included <- c() 
+    # simulate the random shuffling of card numbers from 1 to 2n
     card_num <- sample(1:(2*n))
-    start <- 1 
-    while (length(loop_included)!=2*n) 
-    {
-      if (length(loop_included)>=1 & length(loop_included)<2*n-1)
+    start <- 1 # we start with the first card
+    
+    # while we have not found all the cycles of the cards
+    while (length(loop_included) != 2*n) {
+      # if the  ....
+      if (length(loop_included) >= 1 & length(loop_included) < 2*n-1)
       {
         start <- sample(c(1:(2*n))[-loop_included],1)
       }
-      else if(length(loop_included)==2*n-1)
+      
+      # else if we reach the end of a cycle
+      else if(length(loop_included) == 2*n-1)
       {
+        # pick a new card number that is not in any cycle we previously went through
         start <- c(1:(2*n))[-loop_included]
       }
+  
       pick <- start
       length_count <- 0
       
@@ -292,21 +308,21 @@ dloop <- function (n,nreps)
       }
       # the last element in the loop is not counted up
       loop_included <- append(loop_included,pick)
-      length_count <- length_count+1
+      length_count <- length_count + 1
       loop_len_for_one[length_count] <- loop_len_for_one[length_count]+1 # collect the times each loop length shows in one simulation
       
     }
-    for (i in 1:(2*n))
-    {
-      if (loop_len_for_one[i]!=0)
-      {
-        loop_len_for_all[i] <- loop_len_for_all[i]+1 # counting up each loop length occurring at least once in all simulations
+    
+    for (i in 1:(2*n)){
+      
+      if (loop_len_for_one[i]!=0){
+        # counting up each loop length occurring at least once in all simulations
+        loop_len_for_all[i] <- loop_len_for_all[i] + 1 
       }
     }
-    
   }
   
-  return(loop_len_for_all/nreps)
+  return(loop_len_for_all / nreps) # divide the total count of successful cycles by nreps (total number of simulations) 
 }
 
 
