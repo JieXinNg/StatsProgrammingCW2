@@ -39,18 +39,21 @@ create_box <- function(n)
 }
 
 
-# Pone is used to estimate the probability of finding card = k on or before opening n boxes, there are 3 strategies.
-# Strategy 1 is to start at box k, then going to the subsequent box with the number gotten from the card in box k, 
-# this process is repeated until card = k is found
-# Strategy 2 is the same as Strategy 1, but starting at a random box instead
-# Strategy 3 is opening boxes randomly until card = k is found
-#
-# This function uses create_box
-# @param n = number of boxes opened to find k card
-# @param k = prisoner's number
-# @param strategy = strategy chosen to find k card
-# @param nreps = number of repetitions of simulation to estimate probability
+
 Pone <- function(n, k, strategy, nreps){
+  
+  # Pone is used to estimate the probability of finding card = k on or before opening n boxes, there are 3 strategies.
+  # Strategy 1 is to start at box k, then going to the subsequent box with the number gotten from the card in box k, 
+  # this process is repeated until card = k is found
+  # Strategy 2 is the same as Strategy 1, but starting at a random box instead
+  # Strategy 3 is opening boxes randomly until card = k is found
+  #
+  # This function uses create_box
+  # @param n = number of boxes opened to find k card
+  # @param k = prisoner's number
+  # @param strategy = strategy chosen to find k card
+  # @param nreps = number of repetitions of simulation to estimate probability
+  
   if (strategy == 1){
     count = 0 # start a counter to find the number of times prisoner successfully found card k by the n-th opened box 
     
