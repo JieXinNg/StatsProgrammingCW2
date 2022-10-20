@@ -6,35 +6,34 @@
 # GitHub Repo: https://github.com/JieXinNg/StatsProgrammingCW2.git
 
 # Team member contributions: 
-# the three of us tried all the questions together and helped each other out when stuck
-# we compared our codes and modified them into this final version by picking out bits from each others' codes
-# each of us contributed equally towards this assignment 
-# each of us contributed 33% towards the assignment
+# the three of us did all the questions and helped each other out when stuck
+# we compared and modified our codes into this final version
+# each of us contributed equally towards this assignment, 33% each 
 
 ### Overview ####
-# This project is set up to find a good strategy for the prisoner problem through simulations.
-# The prisoner problem can be described as a problem where there are 2n prisoners, 2n boxes, and 2n cards, 
-# each prisoner is assigned a number from 1 to 2n, the same is done for the boxes and cards.
+# This project finds a good strategy for the prisoner problem with simulations.
+# The prisoner problem is a problem with 2n prisoners, boxes, and cards. 
+# Each prisoner is assigned a number from 1 to 2n.
+# The same is done for the boxes and cards.
 # In each box, a card is randomly allocated.
-# The prisoner is given n tries to open a box until card k, the prisoner's own assigned number is found
-# This project will simulate 3 strategies to find the card k by the n-th opened box.
-# A success would be counted as a simulation whereby the prisoner found card k by the n-th box.
-# We compare the 3 strategies by comparing the probabilities of successful simulations (prisoner found card k) 
-# for each strategy.
-# Startegy 1 is to start at box k, then going to the subsequent box with the card number gotten in box k, 
-# this process is repeated until card = k is found
-# Strategy 2 is the same as Strategy 1, but starting at a random box instead
-# Strategy 3 is opening boxes randomly until card = k is found
-# The function Pone simulates the prisoner problem and estimate the probabilities
-# From the results found with Pone, we are interested in finding the probabilities of all prisoners successfully 
-# finding their own cards with each startegy. Hence, Pall is a function to estimate thoes probabilities.
-# We then created the function dloop to explore the probabilities of each loop length from 1 to 2n occurring 
-# at least once in a random shuffling of cards to boxes
-# dloop is created to find an explanation for why strategy 1 is better than the other two
-# The presence of loops in the sequence of cards while being in the loop for starting at box k increases the 
-# chances of finding card k if loops with length <= n are more likely to occur. 
-# We end the project with visualising the probabilities of each loop length from 1 to 2n occurring 
-# at least once in a random shuffling of cards to boxes
+# The prisoner has n tries to open a box until he finds card k, his own number.
+# This project simulates 3 strategies to find card k by the n-th opened box.
+# A success is when the prisoner found card k by the n-th box in a simulation.
+# We compare the 3 strategies with the probabilities of successful simulations.
+# Startegy 1 starts at box k, then going to the next box with the card number 
+# gotten in box k, this process is repeated until card = k is found.
+# Strategy 2 is the same as Strategy 1, but starting at a random box instead.
+# Strategy 3 is opening boxes randomly until card = k is found.
+# Function Pone simulates the prisoner problem and estimate the probabilities.
+# From the results, we are interested in finding the joint success probability. 
+# Pall is a function to estimate the success probability for all prisoners.
+# We then created dloop to explore the probabilities of each loop length from 1 
+# to 2n occurring at least once in a random shuffling of cards to boxes.
+# dloop is used to find an explanation for why strategy 1 is better.
+# The presence of loops while being in the loop for starting at box k increases 
+# the chances of finding card k if loops with length<=n are more likely to occur 
+# We end the project with visualising the probabilities of each loop length from
+# 1 to 2n occurring at least once in a random shuffling of cards to boxes.
 #################
 
 create_box <- function(n)
@@ -254,8 +253,10 @@ all5 <- c(Pall(5,1,10000),Pall(5,2,10000),Pall(5,3,10000))
 all50 <- c(Pall(50,1,10000),Pall(50,2,10000),Pall(50,3,10000))
 # when n=5
 for (i in 1:3){
-  print(paste0("The individual success probability for n = 5 using strategy ", i, " is ", one5[i]))
-  print(paste0("The joint success probability for n = 5 using strategy ", i, " is ", all5[i]))
+  print(paste0("The individual success probability for n = 5 using strategy ", 
+               i, " is ", one5[i]))
+  print(paste0("The joint success probability for n = 5 using strategy ", 
+               i, " is ", all5[i]))
 }
 # when n=50
 for (i in 1:3){
@@ -295,17 +296,18 @@ for (i in 1:3){
 
 dloop <- function (n,nreps){
   
-  # dloop is used to estimate the probabilities of each loop length from 1 to 2n occurring at least once 
-  # in a random shuffling of cards to boxes.
-  # This is achieved by setting up two variables "start" and "pick", "start" is used to decompose the cycles as we 
-  # remove elements found in the "start" cycle such that we do not end up in the same permutation cycle again when
-  # picking a new "start" value.
-  # "pick" is used to pick the next opened box while adding each element found to the list of elements to be 
-  # excluded from "start", if we end up picking a box with the card "start", we end the current loop and and 
-  # choose a new "start"
+  # dloop estimates the probabilities of each loop length from 1 to 2n occurring 
+  # at least once in a random shuffling of cards to boxes.
+  # This is done by setting up two variables "start" and "pick"
+  # "start" is used to decompose the cycles as we remove elements found in the 
+  # "start" cycle such that we do not end up in the same permutation cycle again 
+  # when picking a new "start" value.
+  # "pick" is used to pick the next opened box while adding each element found 
+  # to the list of elements to be excluded from "start", if we end up picking a
+  # box with the card "start", we end the current loop and and choose a new "start"
   #
-  # @return a 2n array of probabilities for each loop length occurring at least once in a random shuffling of 
-  # cards to boxes
+  # @return a 2n array of probabilities for each loop length occurring at least 
+  # once in a random shuffling of cards to boxes
   # @param n = half the loop length, i.e. put n=5 if you wish to create 10 box-card pairs
   # @param nreps = number of repetitions of simulation to estimate probability
   
@@ -315,31 +317,32 @@ dloop <- function (n,nreps){
   
   # loop the simulation nreps times 
   for (rep in 1:nreps){
-    # array to contain the proability for all loop length occurring at least once in a given simulation
+    # array to contain the probabilities for all loop length occurring at least once in a given simulation
     loop_len_for_one <- rep(0,2*n)
-    # collect the box numbers that have already been in a loop so these indices will not be chosen when starting other loops
+    # collect the box numbers that have been in a loop so they are not chosen again
     loop_included <- c() 
-    card_num <- sample(1:(2*n)) # simulate the random shuffling of card numbers from 1 to 2n
-    start <- 1                  # we start with the first card for the first loop
+    card_num <- sample(1:(2*n)) # random shuffling of card numbers from 1 to 2n
+    start <- 1                  # start with the first card for the first loop
     
     # while we have not found all the cycles of the cards
     while (length(loop_included) != 2*n) {
-      # if we have not gone through all possible loops, i.e. length(loop_included) < 2*n-1
+      # if we have not gone through all possible loops
       if (length(loop_included) >= 1 & length(loop_included) < 2*n-1){
-        # pick the next start for the next loop among the cards that have not been opened
+        # pick the next start for next loop from cards that have not been opened
         start <- sample(c(1:(2*n))[-loop_included], 1)
       }
       
       # else if we have gone through all loops except for one
       else if(length(loop_included) == 2*n-1){
         
-        start <- c(1:(2*n))[-loop_included] # set the last card number to be the element left in loop_included
+        start <- c(1:(2*n))[-loop_included] # set the last card number = element in loop_included
       }
   
       pick <- start     # set the first opened box number to be start
       length_count <- 0 # count up the length of the loop
       
-      # while we have not reached the end of the loop, i.e. the selected card is not the starting box
+      # while we have not reached the end of the loop
+      # i.e. the selected card is not the starting box
       while (card_num[pick] != start){
         
         loop_included <- append(loop_included, pick)# keep adding the elements in the cycle into loop_included
@@ -365,7 +368,7 @@ dloop <- function (n,nreps){
     }
   }
   
-  # divide the total number of times each cycle length occurs by nreps (total number of simulations) to get probability
+  # divide total number of times each cycle length occurs by nreps to get probability
   return(loop_len_for_all / nreps) 
   
 }
