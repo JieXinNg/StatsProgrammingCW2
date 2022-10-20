@@ -266,32 +266,35 @@ for (i in 1:3){
 
 # Q4
 
-#There is a significant different between the result of the strategy 1 and the others, because of the loops, which will be
-#elaborated in the next questions, as well.
+#Strategy 1 works significantly better than the other strategies because of the loops, 
+#during the opening sequences which will be elaborated in the next questions, as well.
 
 #For strategy 3, we do not consider the loops, because the prisoners pick the boxes
-#randomly. Their decision do not depends on the outcome of the previous box. So, each prisoner will have 0.5 chance, and the
-#success probability of each prisoner is independent from the others. Therefore, joint success probability decreases dramatically 
-#with increasing n.
+#randomly. Their decision do not depends on the outcome of the previous box. So, each 
+#prisoner will have 0.5 chance, and the success probability of each prisoner is independent
+#from the others. Therefore, joint success probability decreases dramatically with increasing n.
 
-#If prisoners decide on the next box according to the outcome of previous box, a loop will definitely occur, because we will turn
-#back to our initial box ultimately. In other words, there will be limited number of loops whose lengths are ranging from 1 to 2n
-#in each random shuffling of the cards.
+#If prisoners decide on the next box according to the outcome of previous box, a loop will 
+#definitely occur, because we will turn back to our initial box ultimately. In other words, 
+#there will be limited number of loops whose lengths are ranging from 1 to 2n in each 
+#random shuffling of the cards.
 
-#Then, for strategy 2, we always have to possibilites: Either the first randomly selected box and our desired box are members of
-#the same loop, or not. If not, we will have infinite loop and it is impossible to reach the box containing our number in n steps.
-#That is why the joint probability  of success is dramatically less then the one in strategy 1. According to Pone function, the
-#probability of success for each prisoner was around 0.4, and it is independent from the other prisoners again. Which decreases 
-#the probability of total success with increasing n, again.
+#Then, for strategy 2, we always have to possibilites: Either the first randomly selected box 
+#and our desired box are members of the same loop, or not. If not, we will have infinite loop 
+#and it is impossible to reach the box containing our number in n steps. That is why the joint 
+#probability  of success is dramatically less then the one in strategy 1. According to Pone function, 
+#theprobability of success for each prisoner was around 0.4, and it is independent from the other  
+#prisoners again. Which decreases the probability of total success with increasing n, again.
 
-#Unlike strategy 2, strategy 3 works significantly well, because the loop including our first box will definitely include our
-#desired box, because we are starting with the box with the our number. Then, the probability of success will depend on the length
-#of this first loop. As we can try n times at most, we can find our number only if the length of loop is less than n+1. For a single
-#person, the probability of success is still 0.5, but this time joint probability is much higher, because the success of each 
-#prisoner will not be independent from the others. Because the room is turned to its original state after each turn, and all 
-#prisoners start with a unique number. Then, all loops included by 2n different box-number combinations will be tried by the 
-#prisoners, and if the maximum loop length is less than n+1, then all prisoners will be free. 
-
+#Unlike strategy 2, strategy 3 works significantly well, because the loop including our first box
+# will definitely include our desired box, because we are starting with the box with the our number.
+#Then, the probability of success will depend on the lengthof this first loop. As we can try n times 
+#at most, we can find our number only if the length of loop is less than n+1. For a single person, 
+#the probability of success is still 0.5, but this time joint probability is much higher, because 
+#the success of each prisoner will not be independent from the others. Because the room is turned to 
+#its original state after each turn, and all prisoners start with a unique number. Then, all loops 
+#included by 2n different box-number combinations will be tried by the prisoners, and if the maximum
+#loop length is less than n+1, then all prisoners will be free. 
 
 dloop <- function (n,nreps){
   
