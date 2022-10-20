@@ -185,13 +185,15 @@ Pone <- function(n, k, strategy, nreps){
   
 }
 
-# Pall aims to obtain the probability that all prisoners successfully found the card with their number on it. 
-# The 3 strategies are the same as those in Pone.
-# @param n = number of boxes opened to find k card
-# @param strategy = strategy chosen to find k card, which should be 1, 2 or 3
-# @param nreps = number of repetitions of simulation to estimate probability
+
 Pall <- function(n,strategy,nreps)
 { 
+  # Pall aims to obtain the probability that all prisoners successfully found the card with their number on it. 
+  # The 3 strategies are the same as those in Pone.
+  # @param n = number of boxes opened to find k card
+  # @param strategy = strategy chosen to find k card, which should be 1, 2 or 3
+  # @param nreps = number of repetitions of simulation to estimate probability
+  
   count_simulations <- 0 # counting up the number of times that all prisoners succeed
   if(strategy == 1)
   {
@@ -269,8 +271,10 @@ for (i in 1:3){
 }
 # when n=50
 for (i in 1:3){
-  print(paste0("The individual success probability for n = 50 using strategy ", i, " is ", one50[i]))
-  print(paste0("The joint success probability for n = 50 using strategy ", i, " is ", all50[i]))
+  print(paste0("The individual success probability for n = 50 using strategy ", 
+               i, " is ", one50[i]))
+  print(paste0("The joint success probability for n = 50 using strategy ", 
+               i, " is ", all50[i]))
 }
 
 
@@ -289,7 +293,7 @@ for (i in 1:3){
 #there will be limited number of loops whose lengths are ranging from 1 to 2n in each 
 #random shuffling of the cards.
 
-#Then, for strategy 2, we always have to possibilites: Either the first randomly selected box 
+#Then, for strategy 2, we always have to possibilities: Either the first randomly selected box 
 #and our desired box are members of the same loop, or not. If not, we will have infinite loop 
 #and it is impossible to reach the box containing our number in n steps. That is why the joint 
 #probability  of success is dramatically less then the one in strategy 1. According to Pone function, 
@@ -298,7 +302,7 @@ for (i in 1:3){
 
 #Unlike strategy 2, strategy 3 works significantly well, because the loop including our first box
 # will definitely include our desired box, because we are starting with the box with the our number.
-#Then, the probability of success will depend on the lengthof this first loop. As we can try n times 
+#Then, the probability of success will depend on the length of this first loop. As we can try n times 
 #at most, we can find our number only if the length of loop is less than n+1. For a single person, 
 #the probability of success is still 0.5, but this time joint probability is much higher, because 
 #the success of each prisoner will not be independent from the others. Because the room is turned to 
@@ -387,12 +391,13 @@ dloop <- function (n,nreps){
 
 # Now we explore the probabilities with dloop and visualise them
 prob<-dloop(50,10000)
-print("Below is the estimate of the probabilities of each loop length from 1 to 
-      2n occurring at least once for n = 50.")
+print(paste0("Below is the estimate of the probabilities of each loop length from 1 to " 
+      ,"2n occurring at least once for n = 50."))
 print(prob)
-prob2<- sum(prob[51:100])
-print(paste0("The probability that there is no loop longer than 50 in a random 
-             reshuffling of cards to boxes is ", 1 - prob2))
+prob2<- sum(prob[51:100]) # this sum gives us the probability of losing
+print(paste0("The probability that there is no loop longer than 50 in a random ", 
+             "reshuffling of cards to boxes is ", 1 - prob2, " this is close to", 
+             " the joint success probaility as found using Pall(50,1,10000)"))
 # plot the probabilities
 dat <- data.frame(x=c(1:100), y=(prob))
 barplot(dat$y, names.arg=dat$x, ylim=c(0,0.7), ylab="Probability of Occurance", xlab="Cycle Length")
