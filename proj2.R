@@ -55,6 +55,84 @@ create_box <- function(n)
   return(box_with_card) # this is in the format (box_number,card_number)
 }
 
+# this function is used to determine if the k-th prisoner succeed by strategy 1
+# return 1 if succeed or return 0 if fail
+# Strategy 1 is to start at box k, then going to the subsequent box with the card number gotten in box k,  
+# this process is repeated until card = k is found
+# @param n = number of boxes opened to find k card
+# @param k = prisoner's number
+# @param box_with_card = the list of all box-card pairs
+strategy1 <- function(n, k, box_with_card)
+{
+  k_success <- 0
+  picked_box <- box_with_card[[k]] # The k-th box is the first opened box
+  
+  # loop n times as a prisoner only has n tries
+  for (b in 1:n){
+    # if we do not find the prisoner's number in the box
+    if (picked_box[2] != k){
+      # pick the next box using the card number found in current box
+      picked_box <- box_with_card[[picked_box[2]]] 
+    }
+    # if we found the prisoner's card by the n-th opened box
+    else {
+      k_success <- 1 
+      break
+    }
+  }
+  return (k_success)
+}
+
+# this function is used to determine if the k-th prisoner succeed by strategy 2
+# return 1 if succeed or return 0 if fail
+# Strategy 2 is the same as Strategy 1, but starting at a random box instead
+# @param n = number of boxes opened to find k card
+# @param k = prisoner's number
+# @param box_with_card = the list of all box-card pairs
+strategy2 <- function(n, k, box_with_card)
+{
+  k_success <- 0
+  # start from a randomly selected box
+  picked_box <- box_with_card[[sample(1:(2*n),1)]] 
+  
+  # loop n times as a prisoner only has n tries
+  for (b in 1:n){
+    # if we do not find the prisoner's number in the box
+    if (picked_box[2] != k){
+      # pick the next box using the card number found in current box
+      picked_box <- box_with_card[[picked_box[2]]]
+    }
+    # if we found the prisoner's card by the n-th opened box
+    else {
+      k_success <- 1  
+      break
+    }
+  }
+  return (k_success)
+}
+
+# this function is used to determine if the k-th prisoner succeed by strategy 3
+# return 1 if succeed or return 0 if fail
+# Strategy 3 is opening boxes randomly until card = k is found
+# @param n = number of boxes opened to find k card
+# @param k = prisoner's number
+# @param box_with_card = the list of all box-card pairs
+strategy3 <- function(n, k, box_with_card)
+{
+  k_success <- 0
+  # prisoners open n boxes at random
+  open_order <- c(sample(1:(2*n),n))
+  # every prisoner can open at most n boxes
+  for (j in 1:n) {
+    # if the prisoner successfully found the card with number k
+    if (box_with_card[[open_order[j]]][2] == k) {
+      k_success <- 1
+      break
+    }
+  }
+  return(k_success)
+}
+
 Pone <- function(n, k, strategy, nreps){
   
   # Pone is used to estimate the probability of finding card = k by the n-th box
@@ -76,21 +154,8 @@ Pone <- function(n, k, strategy, nreps){
     # repeat the simulation nreps times
     for (rep in 1:nreps){
       box_with_card <- create_box(n) # create a list of 2n random box-card pairs (numbers ranging from 1 to 2n)
-      picked_box <- box_with_card[[k]] # The k-th box is the first opened box
-      
-      # loop n times as the prisoner only has n tries
-      for (b in 1:n){
-        # if we do not find the prisoner's number in the box
-        if (picked_box[2] != k){
-          # pick the next box using the card number found in current box, [picked_box[2]]
-          picked_box <- box_with_card[[picked_box[2]]]
-        }
-        # if we found the prisoner's card by the n-th opened box
-        else {
-          count <- count + 1 # counting the simulation as a success, hence + 1 to count 
-          break
-        }
-      }
+      # counting the simulation as a success
+      count <- strategy1(n, k, box_with_card) + count
     }
   }
   
@@ -100,21 +165,8 @@ Pone <- function(n, k, strategy, nreps){
     # repeat the simulation nreps times
     for (rep in 1:nreps){
       box_with_card <- create_box(n) # create a list of 2n random box-card pairs (numbers ranging from 1 to 2n)
-      picked_box <- box_with_card[[sample(1:(2*n),1)]] # start from a randomly selected box
-      
-      # loop n times as the prisoner only has n tries
-      for (b in 1:n){
-        # if we do not find the prisoner's number in the box
-        if (picked_box[2] != k){
-          # pick the next box using the card number found in current box, [picked_box[2]]
-          picked_box <- box_with_card[[picked_box[2]]]
-        }
-        # if we found the prisoner's card by the n-th opened box
-        else {
-          count <- count + 1 # counting the simulation as a success, hence + 1 to count 
-          break
-        }
-      }
+      # counting the simulation as a success
+      count <- strategy2(n, k, box_with_card) + count
     }
   }
   
@@ -124,24 +176,8 @@ Pone <- function(n, k, strategy, nreps){
     # repeat the simulation nreps times
     for (rep in 1:nreps){
       box_with_card <- create_box(n) # create a list of 2n random box-card pairs (numbers ranging from 1 to 2n)
-      picked_box <- box_with_card[[sample(1:(2*n),1)]] # start from a randomly selected box
-      box_with_card[[picked_box[1]]] <- NULL # the boxes cannot be selected twice, set the first box to null so that it is not repeated
-      
-      # loop n times as the prisoner only has n tries
-      for (b in 1:n)
-      {
-        # if we do not find the prisoner's number in the box
-        if (picked_box[2] != k){
-          picked_index <- sample(1:length(box_with_card),1) # choose a random index to open another box for next try
-          picked_box <- box_with_card[[picked_index]] # select the box
-          box_with_card[[picked_index]] <- NULL # set the selected box to null so that it is not repeated
-        }
-        # if we found the prisoner's card by the n-th opened box
-        else {
-          count <- count + 1 # counting the simulation as a success, hence + 1 to count 
-          break
-        }
-      }
+      # counting the simulation as a success
+      count <- strategy3(n, k, box_with_card) + count
     }
   }
   
@@ -161,24 +197,13 @@ Pall <- function(n,strategy,nreps)
   {
     # repeat the simulation nreps times
     for (rep in 1:nreps){
-      count_one_simulation <- 0 # counting up the number of prisoners succeed in one simulation
-      # all pairs (box_number, card_number) are exactly the same for every prisoner in the same simulation
+      # counting up the number of prisoners succeed in one simulation
+      count_one_simulation <- 0 
+      # all box-card pairs are exactly the same for every prisoner in one simulation
       box_with_card <- create_box(n)
       # loop over the prisoners
       for (k in 1:(2*n)){
-        picked_box <- box_with_card[[k]] # start from the k-th box
-        # every prisoner can open at most n boxes
-        for (b in 1:n){
-          # decide if the prisoner successfully found the card with number k
-          if (picked_box[2] != k){
-            # pick the next box with the same number as the current card has
-            picked_box <- box_with_card[[picked_box[2]]] 
-          }
-          else {
-            count_one_simulation <- count_one_simulation + 1 # +1 for every individual success
-            break
-          }
-        }
+        count_one_simulation <- strategy1(n, k, box_with_card) + count_one_simulation
       }
       # decide if all prisoners succeed in this simulation
       if (count_one_simulation == 2*n){
@@ -189,25 +214,16 @@ Pall <- function(n,strategy,nreps)
   
   else if (strategy == 2)
   {
-    count_simulations <- 0 # counting up the number of times that all prisoners succeed
+    # counting up the number of times that all prisoners succeed
+    count_simulations <- 0 
     # repeat the simulation nreps times
     for (rep in 1:nreps){
-      count_one_simulation <- 0 # counting up the number of prisoners succeed in one simulation
+      # counting up the number of prisoners succeed in one simulation
+      count_one_simulation <- 0 
       box_with_card <- create_box(n)
       # loop over the prisoners
       for (k in 1:(2*n)){
-        picked_box <- box_with_card[[sample(1:(2*n), 1)]] # start from a randomly selected box
-        # every prisoner can open at most n boxes
-        for (b in 1:n){
-          # decide if the prisoner successfully found the card with number k
-          if (picked_box[2] != k){
-            picked_box <- box_with_card[[picked_box[2]]]
-          }
-          else {
-            count_one_simulation <- count_one_simulation + 1 # +1 for every individual success
-            break
-          }
-        }
+        count_one_simulation <- strategy2(n, k, box_with_card) + count_one_simulation
       }
       # decide if all prisoners succeed in this simulation
       if (count_one_simulation == 2*n){
@@ -218,23 +234,16 @@ Pall <- function(n,strategy,nreps)
   
   else if (strategy == 3) 
   {
-    count_simulations <- 0 # counting up the number of times that all prisoners succeed
+    # counting up the number of times that all prisoners succeed
+    count_simulations <- 0 
     # repeat the simulation nreps times
     for (rep in 1:nreps){
       box_with_card <- create_box(n)
-      count_one_simulation <- 0 # counting up the number of prisoners succeed in one simulation
+      # counting up the number of prisoners succeed in one simulation
+      count_one_simulation <- 0 
       # loop over the prisoners
       for (k in 1:(2*n)){
-        # prisoners open boxes at random
-        open_order <- c(sample(1:(2*n),n))
-        # every prisoner can open at most n boxes
-        for (j in 1:n) {
-          # decide if the prisoner successfully found the card with number k
-          if (box_with_card[[open_order[j]]][2] == k) {
-            count_one_simulation <- count_one_simulation + 1 # +1 for every individual success
-            break
-          }
-        }
+        count_one_simulation <- strategy3(n, k, box_with_card) + count_one_simulation
       }
       # decide if all prisoners succeed in this simulation
       if (count_one_simulation == 2*n) {
