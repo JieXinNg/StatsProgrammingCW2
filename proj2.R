@@ -287,10 +287,10 @@ for (i in 1:3){
 
 # Comments about findings
 #Strategy 1 works significantly better than the other strategies because of the loops, 
-#during the opening sequences which will be elaborated in the next questions, as well.
+#during the opening sequences which will be elaborated in the last section, as well.
 
 #For strategy 3, we do not consider the loops, because the prisoners pick the boxes
-#randomly. Their decision do not depends on the outcome of the previous box. So, each 
+#randomly. Their decision do not depend on the outcome of the previous box. So, each 
 #prisoner will have 0.5 chance, and the success probability of each prisoner is independent
 #from the others. Therefore, joint success probability decreases dramatically with increasing n.
 
@@ -299,15 +299,15 @@ for (i in 1:3){
 #there will be limited number of loops whose lengths are ranging from 1 to 2n in each 
 #random shuffling of the cards.
 
-#Then, for strategy 2, we always have to possibilities: Either the first randomly selected box 
+#Then, for strategy 2, we always have two possibilities: Either the first randomly selected box 
 #and our desired box are members of the same loop, or not. If not, we will have infinite loop 
 #and it is impossible to reach the box containing our number in n steps. That is why the joint 
-#probability  of success is dramatically less then the one in strategy 1. According to Pone function, 
+#probability  of success is dramatically less than the one in strategy 1. According to Pone function, 
 #the probability of success for each prisoner was around 0.4, and it is independent from the other  
-#prisoners again. Which decreases the probability of total success with increasing n, again.
+#prisoners again, Which decreases the probability of total success with increasing n, again.
 
-#Unlike strategy 2, strategy 3 works significantly well, because the loop including our first box
-# will definitely include our desired box, because we are starting with the box with the our number.
+#Unlike strategy 2, strategy 1 works significantly well, because the loop including our first box
+#will definitely include our desired box, because we are starting with the box with our number.
 #Then, the probability of success will depend on the length of this first loop. As we can try n times 
 #at most, we can find our number only if the length of loop is less than n+1. For a single person, 
 #the probability of success is still 0.5, but this time joint probability is much higher, because 
@@ -401,11 +401,12 @@ print(paste0("Below is the estimate of the probabilities of each loop length fro
       ,"2n occurring at least once for n = 50."))
 print(prob)
 prob2<- sum(prob[51:100]) # this sum gives us the probability of losing
-print(paste0("The probability that there is no loop longer than 50 in a random ", 
-             "reshuffling of cards to boxes is ", 1 - prob2, " this is close to", 
+cat(paste0("The probability that there is no loop longer than 50 in a random ", 
+             "reshuffling of cards to boxes is ", 1 - prob2, ", \n this is close to", 
              " the joint success probaility as found using Pall(50,1,10000)"))
 # plot the probabilities
 dat <- data.frame(x=c(1:100), y=(prob))
-barplot(dat$y, names.arg=dat$x, ylim=c(0,0.7), ylab="Probability of Occurance", xlab="Cycle Length")
+barplot(dat$y, names.arg=dat$x, ylim=c(0,0.7), ylab="Probability of Occurance", 
+        xlab="Cycle Length", main="Probability of Each Cycle Length from 1 to 100 Occurring At Least Once")
 
 
