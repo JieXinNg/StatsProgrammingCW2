@@ -55,15 +55,18 @@ create_box <- function(n)
   return(box_with_card) # this is in the format (box_number,card_number)
 }
 
-# this function is used to determine if the k-th prisoner succeed by strategy 1
-# return 1 if succeed or return 0 if fail
-# Strategy 1 is to start at box k, then going to the subsequent box with the card number gotten in box k,  
-# this process is repeated until card = k is found
-# @param n = number of boxes opened to find k card
-# @param k = prisoner's number
-# @param box_with_card = the list of all box-card pairs
+
 strategy1 <- function(n, k, box_with_card)
 {
+  # this function is used to determine if the k-th prisoner succeed by strategy 1
+  # return 1 if succeed or return 0 if fail
+  # Strategy 1 is to start at box k, then going to the subsequent box with the 
+  # card number gotten in box k, this process is repeated until card = k is found
+  # @param n = number of boxes opened to find k card
+  # @param k = prisoner's number
+  # @param box_with_card = the list of all box-card pairs
+  
+  
   k_success <- 0
   picked_box <- box_with_card[[k]] # The k-th box is the first opened box
   
@@ -76,21 +79,24 @@ strategy1 <- function(n, k, box_with_card)
     }
     # if we found the prisoner's card by the n-th opened box
     else {
-      k_success <- 1 
+      k_success <- 1 # count up the number of successess
       break
     }
   }
   return (k_success)
 }
 
-# this function is used to determine if the k-th prisoner succeed by strategy 2
-# return 1 if succeed or return 0 if fail
-# Strategy 2 is the same as Strategy 1, but starting at a random box instead
-# @param n = number of boxes opened to find k card
-# @param k = prisoner's number
-# @param box_with_card = the list of all box-card pairs
+
 strategy2 <- function(n, k, box_with_card)
 {
+  # this function is used to determine if the k-th prisoner succeed by strategy 2
+  # return 1 if succeed or return 0 if fail
+  # Strategy 2 is the same as Strategy 1, but starting at a random box instead
+  # @param n = number of boxes opened to find k card
+  # @param k = prisoner's number
+  # @param box_with_card = the list of all box-card pairs
+  
+  
   k_success <- 0
   # start from a randomly selected box
   picked_box <- box_with_card[[sample(1:(2*n),1)]] 
@@ -104,21 +110,23 @@ strategy2 <- function(n, k, box_with_card)
     }
     # if we found the prisoner's card by the n-th opened box
     else {
-      k_success <- 1  
+      k_success <- 1  # count up the number of successes
       break
     }
   }
   return (k_success)
 }
 
-# this function is used to determine if the k-th prisoner succeed by strategy 3
-# return 1 if succeed or return 0 if fail
-# Strategy 3 is opening boxes randomly until card = k is found
-# @param n = number of boxes opened to find k card
-# @param k = prisoner's number
-# @param box_with_card = the list of all box-card pairs
+
 strategy3 <- function(n, k, box_with_card)
 {
+  # this function is used to determine if the k-th prisoner succeed by strategy 3
+  # return 1 if succeed or return 0 if fail
+  # Strategy 3 is opening boxes randomly until card = k is found
+  # @param n = number of boxes opened to find k card
+  # @param k = prisoner's number
+  # @param box_with_card = the list of all box-card pairs
+  
   k_success <- 0
   # prisoners open n boxes at random
   open_order <- c(sample(1:(2*n),n))
@@ -126,7 +134,7 @@ strategy3 <- function(n, k, box_with_card)
   for (j in 1:n) {
     # if the prisoner successfully found the card with number k
     if (box_with_card[[open_order[j]]][2] == k) {
-      k_success <- 1
+      k_success <- 1 # count up the number of successes
       break
     }
   }
@@ -149,11 +157,11 @@ Pone <- function(n, k, strategy, nreps){
   # @param nreps = number of repetitions of simulation to estimate probability
   
   if (strategy == 1){
-    count = 0 # start a counter to find the number of times prisoner successfully found card k by the n-th opened box 
+    count = 0 # start a counter for successful simulations 
     
     # repeat the simulation nreps times
     for (rep in 1:nreps){
-      box_with_card <- create_box(n) # create a list of 2n random box-card pairs (numbers ranging from 1 to 2n)
+      box_with_card <- create_box(n) # create a list of 2n random box-card pairs 
       # counting the simulation as a success
       count <- strategy1(n, k, box_with_card) + count
     }
@@ -161,10 +169,10 @@ Pone <- function(n, k, strategy, nreps){
   
   else if (strategy == 2)
   {
-    count = 0 # start a counter to find the number of times prisoner successfully found card k by the n-th opened box
+    count = 0 # start a counter for successful simulations
     # repeat the simulation nreps times
     for (rep in 1:nreps){
-      box_with_card <- create_box(n) # create a list of 2n random box-card pairs (numbers ranging from 1 to 2n)
+      box_with_card <- create_box(n) # create a list of 2n random box-card pairs 
       # counting the simulation as a success
       count <- strategy2(n, k, box_with_card) + count
     }
@@ -172,23 +180,23 @@ Pone <- function(n, k, strategy, nreps){
   
   else if (strategy == 3)
   {
-    count = 0 # start a counter to find the number of times prisoner successfully found card k by the n-th opened box
+    count = 0 # start a counter for successful simulations
     # repeat the simulation nreps times
     for (rep in 1:nreps){
-      box_with_card <- create_box(n) # create a list of 2n random box-card pairs (numbers ranging from 1 to 2n)
+      box_with_card <- create_box(n) # create a list of 2n random box-card pairs 
       # counting the simulation as a success
       count <- strategy3(n, k, box_with_card) + count
     }
   }
   
-  return(count/nreps) # probability = number of successes / total simulations (nreps)
+  return(count/nreps) # probability = number of successes / total simulations 
   
 }
 
 
 Pall <- function(n,strategy,nreps)
 { 
-  # Pall aims to obtain the probability that all prisoners successfully found the card with their number on it. 
+  # Pall aims to find the probability that all prisoners successfully found their card 
   # The 3 strategies are the same as those in Pone.
   # @param n = number of boxes opened to find k card
   # @param strategy = strategy chosen to find k card, which should be 1, 2 or 3
@@ -277,9 +285,7 @@ for (i in 1:3){
                i, " is ", all50[i]))
 }
 
-
-# Q4
-
+# Comments about findings
 #Strategy 1 works significantly better than the other strategies because of the loops, 
 #during the opening sequences which will be elaborated in the next questions, as well.
 
@@ -297,7 +303,7 @@ for (i in 1:3){
 #and our desired box are members of the same loop, or not. If not, we will have infinite loop 
 #and it is impossible to reach the box containing our number in n steps. That is why the joint 
 #probability  of success is dramatically less then the one in strategy 1. According to Pone function, 
-#theprobability of success for each prisoner was around 0.4, and it is independent from the other  
+#the probability of success for each prisoner was around 0.4, and it is independent from the other  
 #prisoners again. Which decreases the probability of total success with increasing n, again.
 
 #Unlike strategy 2, strategy 3 works significantly well, because the loop including our first box
