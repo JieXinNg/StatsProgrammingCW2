@@ -38,7 +38,7 @@
 
 create_box <- function(n)
 {
-  # this function returns a list to contain 2n of box-car pairs where each card is randomly allocated to a box  
+  # returns a list of 2n of box-car pairs, each card is randomly allocated to a box  
   # @return box_with_card = a list of box and card pairs
   # @param n = half of the number of boxes, i.e. put n=5 if you wish to create 10 box-card pairs
 
@@ -57,9 +57,9 @@ create_box <- function(n)
 
 Pone <- function(n, k, strategy, nreps){
   
-  # Pone is used to estimate the probability of finding card = k by the n-th box, there are 3 strategies.
-  # Strategy 1 is to start at box k, then going to the subsequent box with the card number gotten in box k,  
-  # this process is repeated until card = k is found
+  # Pone is used to estimate the probability of finding card = k by the n-th box
+  # Strategy 1 is to start at box k, then going to the subsequent box with the 
+  # card number gotten in box k, this process is repeated until card = k is found
   # Strategy 2 is the same as Strategy 1, but starting at a random box instead
   # Strategy 3 is opening boxes randomly until card = k is found
   #
@@ -344,10 +344,10 @@ dloop <- function (n,nreps){
       # while we have not reached the end of the loop
       # i.e. the selected card is not the starting box
       while (card_num[pick] != start){
-        
-        loop_included <- append(loop_included, pick)# keep adding the elements in the cycle into loop_included
-        pick <- card_num[pick]                      # pick the next box to be the current card number
-        length_count <- length_count + 1            # counting up the length of each loop
+        # keep adding the elements in the cycle into loop_included
+        loop_included <- append(loop_included, pick)
+        pick <- card_num[pick]            # pick the next box to be the current card number
+        length_count <- length_count + 1  # counting up the length of each loop
         
       }
       
@@ -375,10 +375,12 @@ dloop <- function (n,nreps){
 
 # Now we explore the probabilities with dloop and visualise them
 prob<-dloop(50,10000)
-print("Below is the estimate of the probabilities of each loop length from 1 to 2n occurring at least once for n = 50.")
+print("Below is the estimate of the probabilities of each loop length from 1 to 
+      2n occurring at least once for n = 50.")
 print(prob)
 prob2<- sum(prob[51:100])
-print(paste0("The probability that there is no loop longer than 50 in a random reshuffling of cards to boxes is ", 1 - prob2))
+print(paste0("The probability that there is no loop longer than 50 in a random 
+             reshuffling of cards to boxes is ", 1 - prob2))
 # plot the probabilities
 dat <- data.frame(x=c(1:100), y=(prob))
 barplot(dat$y, names.arg=dat$x, ylim=c(0,0.7), ylab="Probability of Occurance", xlab="Cycle Length")
